@@ -1,10 +1,6 @@
 const express = require('express')
 const router = new express.Router()
+const Blog = require('../models/blogs')
 
-router.get('', (req, res) => {
-    res.send({
-        msg: 'ROuter set up.'
-    })
-})
 
 module.exports = router
