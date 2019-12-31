@@ -14,6 +14,20 @@ router.post('/users', async (req, res) => {
     }
 })
 
+router.post('/users/login', async (req, res) => {
+    try {
+        const user = await User.findByCredentials(req.body.email, req.body.password)
+        const token = await user.getAuthToken()
+        res.status(200).send({
+            user,
+            token
+        })
+
+    } catch (error) {
+        res.status(404).send(error)
+    }
+})
+
 // get Users
 router.get('/users', async (req, res) => {
     console.log(123)
@@ -26,7 +40,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
-// get user
+// get user 
 router.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
