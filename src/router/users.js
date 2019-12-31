@@ -14,6 +14,7 @@ router.post('/users', async (req, res) => {
     }
 })
 
+// get Users
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({})
@@ -23,6 +24,7 @@ router.get('/users', async (req, res) => {
     }
 })
 
+// get user
 router.get('/users/:id', async (req, res) => {
     try {
         const user = await User.findById(req.params.id)
@@ -35,6 +37,7 @@ router.get('/users/:id', async (req, res) => {
     }
 })
 
+// update user
 router.patch('/users/:id', async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'password', 'email']
@@ -66,6 +69,7 @@ router.patch('/users/:id', async (req, res) => {
     }
 })
 
+// delete user
 router.delete('/users/:id', async (req, res) => {
     try {
         const user = await User.deleteOne({

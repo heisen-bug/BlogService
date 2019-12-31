@@ -20,14 +20,17 @@ const blogSchema = new mongoose.Schema({
         required: true,
         trim: true,
     },
-    publishedOn: {
-        type: Date,
-        default: Date.now(),
-    },
     tags: {
         type: [String],
         trim: true,
-    }
+    },
+    // author: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
+
+    // }
+},{
+    timestamps: true
 })
 
 const Blog = mongoose.model('Blog', blogSchema)
