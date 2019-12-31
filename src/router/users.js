@@ -10,14 +10,16 @@ router.post('/users', async (req, res) => {
         await user.save()
         res.status(201).send(user)
     } catch (error) {
-        res.send(error)
+        res.status(400).send(error)
     }
 })
 
 // get Users
 router.get('/users', async (req, res) => {
+    console.log(123)
     try {
         const users = await User.find({})
+        // console.log(123)
         res.status(200).send(users)
     } catch (error) {
         res.status(400).send(error)

@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
     timestamps: true
 })
 
+// userSchema.virtual('blogs', {
+//     ref: 'Blog',
+//     localField: '_id',
+//     foreignField: 'author'
+// })
 
 const User = mongoose.model('User', userSchema)
 

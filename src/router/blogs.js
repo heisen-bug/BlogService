@@ -12,8 +12,17 @@ router.post('/blogs', async (req, res) => {
     }
 })
 
+router.get('/blogs', async (req, res) => {
+    try {
+        const blogs = await Blog.find({})
+        res.status(200).send(blogs)
+    } catch (error) {
+        res.status(400).send()
+    }
+})
+
 router.get('/blogs/:id', async (req, res) => {
-    const _id = req.params._id
+    const _id = req.params.id
     try {
         const blog = await Blog.find({
             _id
@@ -30,21 +39,23 @@ router.patch('/blogs/:id', async (req, res) => {
         const updates = Object.keys(req.body)
         const allowedUpdates = ['title', 'body', 'tags']
         const isValid = updates.every(update => allowedUpdates.includes(update))
-
+ 
         if (!isValid) {
             res.status(400).send({
                 error: 'Invalid Fields'
             })
         }
 
-        const blog = await Blog.find({
+        const blog = await Blog.findOne({
             _id: req.params.id
         })
-
+        // console.log(blog, '123')
+        // console.log(updates)
         updates.forEach(update => {
             blog[update] = req.body[update]
         })
 
+        // console.log(blog)
         await blog.save()
 
         res.status(200).send(blog)
@@ -61,7 +72,7 @@ router.delete('/blogs/:id', async (req, res) => {
         await Blog.deleteOne({
             _id: req.params.id
         })
-        res.status(200).send()
+        res.status(200).send('deleted')
     } catch (error) {
         res.status(404).send(error)
     }
