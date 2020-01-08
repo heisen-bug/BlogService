@@ -1,14 +1,18 @@
 const express = require('express')
 const router = new express.Router()
 const User = require('../models/users')
-
+const auth = require('../middleware/auth')
 
 // Create User or SignUp
 router.post('/users', async (req, res) => {
     try {
         const user = new User(req.body)
-        await user.save()
-        res.status(201).send(user)
+        const token = await user.getAuthToken()
+
+        res.status(201).send({
+            user,
+            token
+        })
     } catch (error) {
         res.status(400).send(error)
     }
@@ -16,8 +20,11 @@ router.post('/users', async (req, res) => {
 
 router.post('/users/login', async (req, res) => {
     try {
+        console.log(req.body)
         const user = await User.findByCredentials(req.body.email, req.body.password)
+        // console.log(user)
         const token = await user.getAuthToken()
+        // console.log(token)
         res.status(200).send({
             user,
             token
@@ -28,33 +35,18 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
-// get Users
-router.get('/users', async (req, res) => {
-    console.log(123)
-    try {
-        const users = await User.find({})
-        // console.log(123)
-        res.status(200).send(users)
-    } catch (error) {
-        res.status(400).send(error)
-    }
-})
+// Logout
+// router.post('/users/logout', auth, async (req, res) => {
+    
+// })
 
-// get user 
-router.get('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id)
-        if (!user) {
-            res.status(400).send('No such user found')
-        }
-        res.status(200).send(user)
-    } catch (error) {
-        res.status(400).send(error)
-    }
+// get Profile
+router.get('/myprofile', auth, async (req, res) => {
+    res.send(req.user)
 })
 
 // update user
-router.patch('/users/:id', async (req, res) => {
+router.patch('/myprofile', auth, async (req, res) => {
     const updates = Object.keys(req.body)
     const allowedUpdates = ['name', 'password', 'email']
     const isValidUpdate = updates.every(update => allowedUpdates.includes(update))
@@ -65,38 +57,26 @@ router.patch('/users/:id', async (req, res) => {
         })
     }
     try {
-        const user = await User.findById(req.params.id)
-
-        if (!user) {
-            res.status(400).send({
-                error: 'No such user exists'
-            })
-        }
+        
 
         updates.forEach(update => {
-            user[update] = req.body[update]
+            req.user[update] = req.body[update]
         })
 
-        await user.save()
+        await req.user.save()
 
-        res.status(200).send(user)
+        res.status(200).send(req.user)
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
 // delete user
-router.delete('/users/:id', async (req, res) => {
+router.delete('/myprofile', auth, async (req, res) => {
     try {
-        const user = await User.deleteOne({
-            _id: req.params.id
-        })
-        if (!user) {
-            res.status(400).send({
-                error: 'No Such User Found'
-            })
-        }
-        res.status(200).send(user)
+        // const user = req.user
+        await req.user.remove()
+        res.status(200).send('Deleted')
     } catch (error) {
         res.status(400).send(error)
     }

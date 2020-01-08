@@ -4,6 +4,9 @@ const app = express()
 const port = process.env.PORT || 3000
 const blogRouter = require('./router/blogs')
 const userRouter = require('./router/users')
+const User = require('./models/users')
+
+
 
 app.use(express.json())
 app.use(blogRouter)

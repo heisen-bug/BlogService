@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const User = require('./users')
 const validator = require('validator')
 
 const blogSchema = new mongoose.Schema({
@@ -24,10 +25,10 @@ const blogSchema = new mongoose.Schema({
         type: [String],
         trim: true,
     },
-    // author: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: 'User',
-    // }
+    author: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }
 },{
     timestamps: true
 })
